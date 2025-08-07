@@ -110,6 +110,5 @@ void					safe_munmap(void *addr, size_t size);
 
 /* Debug and display */
 void					print_zone_info(t_zone *zone, const char *type_name);
-void					print_block_info(t_block *block);
 
 #endif

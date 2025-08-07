@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test_malloc.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: malloc-project                             +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/04                               #+#    #+#             */
-/*   Updated: 2025/08/04                              ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -31,7 +19,6 @@ void	test_basic_malloc(void)
 	printf("malloc(2048): %p\n", ptr3);
 	assert(ptr3 != NULL);
 
-	// Free all allocated memory
 	free(ptr1);
 	free(ptr2);
 	free(ptr3);
@@ -94,7 +81,6 @@ void	test_show_alloc_mem(void)
 	printf("\nMemory state after some frees:\n");
 	show_alloc_mem();
 
-	// Cleanup
 	free(ptrs[0]);
 	free(ptrs[2]);
 	free(ptrs[4]);
@@ -106,20 +92,16 @@ void	test_edge_cases(void)
 {
 	printf("=== Testing Edge Cases ===\n");
 
-	// malloc(0)
 	void *ptr1 = malloc(0);
 	printf("malloc(0): %p\n", ptr1);
 
-	// realloc(NULL, size) should behave like malloc
 	void *ptr2 = realloc(NULL, 50);
 	printf("realloc(NULL, 50): %p\n", ptr2);
 	assert(ptr2 != NULL);
 
-	// realloc(ptr, 0) should behave like free
 	void *ptr3 = realloc(ptr2, 0);
 	printf("realloc(ptr, 0): %p\n", ptr3);
 
-	// Clean up if malloc(0) returned a real pointer
 	if (ptr1 != NULL)
 		free(ptr1);
 
@@ -132,10 +114,10 @@ int	main(void)
 	printf("========================\n\n");
 
 	test_basic_malloc();
-	//test_free();
-	//test_realloc();
-	//test_show_alloc_mem();
-	//test_edge_cases();
+	test_free();
+	test_realloc();
+	test_show_alloc_mem();
+	test_edge_cases();
 
 	printf("🎉 All tests completed!\n");
 	return (0);

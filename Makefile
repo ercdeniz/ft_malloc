@@ -15,6 +15,9 @@ ifndef HOSTTYPE
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
+VLG	=
+EXEC	=	test_malloc
+
 # Library names
 NAME = libft_malloc.so
 TARGET = libft_malloc_$(HOSTTYPE).so
@@ -80,17 +83,17 @@ clean:
 	@echo "$(RED)✗ Cleaned object files$(NC)"
 
 fclean: clean
-	@rm -f $(TARGET) $(NAME)
+	@rm -f $(TARGET) $(NAME) ${EXEC}
 	@make -C $(LIBFTDIR) fclean
 	@echo "$(RED)✗ Cleaned all$(NC)"
 
 re: fclean all
 
 test: $(NAME)
-	@$(CC) -g3 test/test_malloc.c -L. -lft_malloc -o test_malloc
+	@$(CC) -g3 test/test_malloc.c -L. -lft_malloc -o ${EXEC}
 	@echo "$(GREEN)✓ Built test executable$(NC)"
 
 run_test: test
-	@LD_LIBRARY_PATH=. ./test_malloc
+	LD_LIBRARY_PATH=. ${VLG} ./${EXEC}
 
 .PHONY: all clean fclean re test run_test

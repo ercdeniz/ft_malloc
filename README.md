@@ -8,7 +8,6 @@ Bu proje, C programlama dilinde dinamik bellek ayırma mekanizmasını (malloc) 
 - `malloc(size_t size)` - Bellek ayırma
 - `free(void *ptr)` - Bellek serbest bırakma
 - `realloc(void *ptr, size_t size)` - Bellek yeniden boyutlandırma
-- `show_alloc_mem()` - Bellek durumu görüntüleme
 
 ### 🏗️ Mimari Tasarım
 - **TINY Zone**: 1-128 byte allocationlar için optimize edilmiş
@@ -56,7 +55,6 @@ malloc/
 │   ├── malloc.c               # Ana implementation
 │   ├── free.c                 # Free implementation
 │   ├── realloc.c              # Realloc implementation
-│   ├── show_alloc_mem.c       # Debug fonksiyonu
 │   ├── zone_management.c      # Zone yönetimi
 │   ├── block_management.c     # Block yönetimi
 │   ├── utils.c                # Yardımcı fonksiyonlar
@@ -95,7 +93,6 @@ Block Header:
 - ✅ Edge cases (NULL pointers, zero size)
 - ✅ Memory fragmentation handling
 - ✅ Large allocation management
-- ✅ show_alloc_mem accuracy
 
 ## 📊 Performans
 

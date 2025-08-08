@@ -1,4 +1,4 @@
-#include "../includes/malloc.h"
+#include "malloc.h"
 
 static void	copy_data(void *dst, void *src, size_t old_size, size_t new_size)
 {

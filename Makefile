@@ -1,71 +1,47 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::   #
-#    Makefile                                           :+:      :+:    :+:   #
-#                                                     +:+ +:+         +:+     #
-#    By: malloc-project                             +#+  +:+       +#+        #
-#                                                 +#+#+#+#+#+   +#+           #
-#    Created: 2025/08/04                               #+#    #+#             #
-#    Updated: 2025/08/04                              ###   ########.fr       #
-#                                                                              #
-# **************************************************************************** #
-
-# HOSTTYPE environment variable check
 ifndef HOSTTYPE
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-VLG	=
-EXEC	=	test_malloc
+EXEC			= test_malloc
 
-# Library names
-NAME = libft_malloc.so
-TARGET = libft_malloc_$(HOSTTYPE).so
+SYMLINK_NAME	= libft_malloc.so
+LIBRARY_NAME	= libft_malloc_$(HOSTTYPE).so
 
-# Directories
-SRCDIR = src
-INCDIR = includes
-LIBFTDIR = libft
-OBJDIR = obj
+SRCDIR			= src
+INCDIR			= includes
+LIBFTDIR		= libft
+OBJDIR			= obj
+CC				= cc
+CFLAGS			= -Wall -Wextra -Werror -fPIC
+LDFLAGS			= -shared
+INCLUDES		= -I$(INCDIR) -I$(LIBFTDIR)
 
-# Compiler and flags
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -fPIC -g3
-LDFLAGS = -shared
-INCLUDES = -I$(INCDIR) -I$(LIBFTDIR)
-
-# Source files
 SRCS = $(SRCDIR)/malloc.c \
        $(SRCDIR)/free.c \
        $(SRCDIR)/realloc.c \
-       $(SRCDIR)/show_alloc_mem.c \
        $(SRCDIR)/zone_management.c \
        $(SRCDIR)/block_management.c \
        $(SRCDIR)/utils.c \
        $(SRCDIR)/alignment.c
 
-# Object files
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-# Libft
 LIBFT = $(LIBFTDIR)/libft.a
 
-# Colors for output
 GREEN = \033[0;32m
 RED = \033[0;31m
 BLUE = \033[0;34m
-NC = \033[0m # No Color
+NC = \033[0m
 
-# Rules
-all: $(NAME)
+all: $(SYMLINK_NAME)
 
-$(NAME): $(TARGET)
-	@ln -sf $(TARGET) $(NAME)
-	@echo "$(GREEN)✓ Created symbolic link: $(NAME) -> $(TARGET)$(NC)"
+$(SYMLINK_NAME): $(LIBRARY_NAME)
+	@ln -sf $(LIBRARY_NAME) $(SYMLINK_NAME)
+	@echo "$(GREEN)✓ Created symbolic link: $(SYMLINK_NAME) -> $(LIBRARY_NAME)$(NC)"
 
-$(TARGET): $(OBJDIR) $(OBJS) $(LIBFT)
-	@$(CC) $(LDFLAGS) $(OBJS) $(LIBFT) -o $(TARGET)
-	@echo "$(GREEN)✓ Built $(TARGET)$(NC)"
+$(LIBRARY_NAME): $(OBJDIR) $(OBJS) $(LIBFT)
+	@$(CC) $(LDFLAGS) $(OBJS) $(LIBFT) -o $(LIBRARY_NAME)
+	@echo "$(GREEN)✓ Built $(LIBRARY_NAME)$(NC)"
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
@@ -75,25 +51,40 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
 $(LIBFT):
-	@make -C $(LIBFTDIR)
+	@make -C $(LIBFTDIR) --no-print-directory
 
 clean:
 	@rm -rf $(OBJDIR)
-	@make -C $(LIBFTDIR) clean
+	@make -C $(LIBFTDIR) clean --no-print-directory
 	@echo "$(RED)✗ Cleaned object files$(NC)"
 
 fclean: clean
-	@rm -f $(TARGET) $(NAME) ${EXEC}
-	@make -C $(LIBFTDIR) fclean
+	@rm -f $(LIBRARY_NAME) $(SYMLINK_NAME) $(EXEC)
+	@make -C $(LIBFTDIR) fclean --no-print-directory
 	@echo "$(RED)✗ Cleaned all$(NC)"
 
 re: fclean all
 
-test: $(NAME)
-	@$(CC) -g3 test/test_malloc.c -L. -lft_malloc -o ${EXEC}
+_run_test:
+	@if [ ! -f $(SYMLINK_NAME) ]; then \
+		echo "$(RED)✗ Library $(SYMLINK_NAME) not found! Run 'make' first$(NC)"; \
+		exit 1; \
+	fi
+	@$(CC) test/test_malloc.c -L. -lft_malloc -o $(EXEC) || { \
+		echo "$(RED)✗ Failed to compile test$(NC)"; \
+		exit 1; \
+	}
 	@echo "$(GREEN)✓ Built test executable$(NC)"
+	@echo "$(BLUE)Running tests...$(NC)"
+	@LD_LIBRARY_PATH=. $(TEST_CMD) ./$(EXEC) || { \
+		echo "$(RED)✗ Test execution failed$(NC)"; \
+		exit 1; \
+	}
 
-run_test: test
-	LD_LIBRARY_PATH=. ${VLG} ./${EXEC}
+test:
+	@$(MAKE) --no-print-directory _run_test TEST_CMD=""
 
-.PHONY: all clean fclean re test run_test
+testv:
+	@$(MAKE) --no-print-directory _run_test TEST_CMD="valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=1"
+
+.PHONY: all clean fclean re test testv _run_test

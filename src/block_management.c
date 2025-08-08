@@ -1,4 +1,4 @@
-#include "../includes/malloc.h"
+#include "malloc.h"
 
 t_block	*create_block(t_zone *zone, size_t size)
 {
@@ -126,7 +126,7 @@ bool	is_valid_pointer(void *ptr)
 
 	block = get_block_header(ptr);
 
-	if (block->size == 0 || block->size > (1024 * 1024 * 1024)) /* 1GB max */
+	if (block->size == 0 || block->size > (MAX_ALLOC_SIZE))
 		return (false);
 
 	return (true);

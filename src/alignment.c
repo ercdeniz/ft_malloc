@@ -1,4 +1,4 @@
-#include "../includes/malloc.h"
+#include "malloc.h"
 
 size_t	align_size(size_t size)
 {

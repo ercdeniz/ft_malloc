@@ -1,4 +1,4 @@
-#include "../includes/malloc.h"
+#include "malloc.h"
 
 t_zone	*create_zone(t_zone_type type, size_t min_size)
 {

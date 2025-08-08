@@ -1,4 +1,4 @@
-#include "../includes/malloc.h"
+#include "malloc.h"
 
 static void	remove_zone_from_list(t_zone *zone_to_remove)
 {
@@ -50,6 +50,7 @@ void	free(void *ptr)
 {
 	t_zone	*zone;
 	t_block	*block;
+	char	*block_start;
 
 	if (!ptr)
 		return;
@@ -63,6 +64,18 @@ void	free(void *ptr)
 
 	block = get_block_header(ptr);
 	if (!block || block->is_free)
+		return;
+
+	block_start = (char *)block;
+	
+	if (block->size > zone->total_size - sizeof(t_block))
+		return;
+		
+	if (block_start < (char *)zone->start || 
+		block_start + sizeof(t_block) + block->size > (char *)zone->start + zone->total_size)
+		return;
+
+	if ((char *)ptr != (char *)block + sizeof(t_block))
 		return;
 
 	if (zone->type == LARGE)

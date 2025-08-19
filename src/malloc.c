@@ -32,6 +32,7 @@ static void *malloc_large(size_t size)
 
 	zone->next = g_malloc_state.large_zones;
 	g_malloc_state.large_zones = zone;
+	zone->used_size += sizeof(t_block) + size;
 
 	return ((char *)block + sizeof(t_block));
 }
@@ -58,15 +59,20 @@ static void *malloc_small_tiny(size_t size)
 
 	block = find_free_block(zone, size);
 	if (!block)
+	{
 		block = create_block(zone, size);
-
-	if (!block)
-		return (NULL);
+		if (!block)
+			return (NULL);
+		zone->used_size += sizeof(t_block);
+	}
+	else
+	{
+		block->is_free = false;
+	}
 
 	if (block->size > size + sizeof(t_block) + ALIGNMENT)
 		split_block(block, size);
 
-	block->is_free = false;
 	zone->used_size += block->size;
 
 	return ((char *)block + sizeof(t_block));

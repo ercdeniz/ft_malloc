@@ -54,6 +54,7 @@ extern t_malloc_state	g_malloc_state;
 void					*malloc(size_t size);
 void					free(void *ptr);
 void					*realloc(void *ptr, size_t size);
+void					show_alloc_mem(void);
 
 t_zone					*create_zone(t_zone_type type, size_t min_size);
 void					destroy_zone(t_zone *zone);

@@ -22,7 +22,8 @@ SRCS = $(SRCDIR)/malloc.c \
        $(SRCDIR)/zone_management.c \
        $(SRCDIR)/block_management.c \
        $(SRCDIR)/utils.c \
-       $(SRCDIR)/alignment.c
+       $(SRCDIR)/alignment.c \
+       $(SRCDIR)/show_alloc_mem.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
@@ -59,7 +60,7 @@ clean:
 	@echo "$(RED)✗ Cleaned object files$(NC)"
 
 fclean: clean
-	@rm -f $(LIBRARY_NAME) $(SYMLINK_NAME) $(EXEC)
+	@rm -f *.so $(EXEC)
 	@make -C $(LIBFTDIR) fclean --no-print-directory
 	@echo "$(RED)✗ Cleaned all$(NC)"
 
@@ -81,10 +82,10 @@ _run_test:
 		exit 1; \
 	}
 
-test:
+test: all
 	@$(MAKE) --no-print-directory _run_test TEST_CMD=""
 
-testv:
+testv: all
 	@$(MAKE) --no-print-directory _run_test TEST_CMD="valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=1"
 
 .PHONY: all clean fclean re test testv _run_test

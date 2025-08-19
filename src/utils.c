@@ -2,7 +2,12 @@
 
 t_zone_type	get_zone_type(size_t size)
 {
-	return (size <= TINY_MAX_SIZE) ? TINY : SMALL;
+	if (size <= TINY_MAX_SIZE)
+		return (TINY);
+	else if (size <= SMALL_MAX_SIZE)
+		return (SMALL);
+	else
+		return (LARGE);
 }
 
 size_t	get_zone_size(t_zone_type type, size_t min_size)

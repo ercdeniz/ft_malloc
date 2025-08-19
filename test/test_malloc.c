@@ -96,6 +96,7 @@ int	main(void)
 	test_free();
 	test_realloc();
 	test_edge_cases();
+	show_alloc_mem();
 
 	printf(GREEN "🎉 All tests completed!" NC "\n");
 	return (0);

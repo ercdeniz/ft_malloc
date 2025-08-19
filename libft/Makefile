@@ -10,7 +10,8 @@ SRCS = ft_memcpy.c \
        ft_putstr_fd.c \
        ft_putchar_fd.c \
        ft_putnbr_fd.c \
-       ft_putnbr_base_fd.c
+       ft_putnbr_base_fd.c \
+       ft_strlen.c
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 

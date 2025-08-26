@@ -6,14 +6,13 @@ CFLAGS = -Wall -Wextra -Werror
 SRCDIR = .
 OBJDIR = obj
 
-SRCS = ft_memcpy.c \
-       ft_putstr_fd.c \
-       ft_putchar_fd.c \
-       ft_putnbr_fd.c \
-       ft_putnbr_base_fd.c \
-       ft_strlen.c
+SRC = 	./ft_memcpy.c	\
+		./printf.c		\
+		./ft_putchar.c	\
+		./ft_putstr.c	\
+		./ft_itoa.c
 
-OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
+OBJS = $(SRC:%.c=$(OBJDIR)/%.o)
 
 all: $(NAME)
 

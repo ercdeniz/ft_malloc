@@ -1,5 +1,9 @@
 #include "malloc.h"
 
+/**
+ * @brief Belirli bir zone'u listeden kaldırır.
+ * @param zone_to_remove Kaldırılacak zone.
+ */
 static void	remove_zone_from_list(t_zone *zone_to_remove)
 {
 	t_zone	**zones;
@@ -26,12 +30,21 @@ static void	remove_zone_from_list(t_zone *zone_to_remove)
 		current->next = zone_to_remove->next;
 }
 
+/**
+ * @brief Zone'u serbest bırakır.
+ * @param zone Serbest bırakılacak zone.
+ */
 static void	free_large(t_zone *zone)
 {
 	remove_zone_from_list(zone);
 	destroy_zone(zone);
 }
 
+/**
+ * @brief Small veya tiny zone'u serbest bırakır.
+ * @param zone Serbest bırakılacak zone.
+ * @param block Serbest bırakılacak blok.
+ */
 static void	free_small_tiny(t_zone *zone, t_block *block)
 {
 	block->is_free = true;
@@ -46,6 +59,10 @@ static void	free_small_tiny(t_zone *zone, t_block *block)
 	}
 }
 
+/**
+ * @brief Bellek alanını serbest bırakır.
+ * @param ptr Serbest bırakılacak bellek alanının başlangıç adresi.
+ */
 void	free(void *ptr)
 {
 	t_zone	*zone;
@@ -53,9 +70,6 @@ void	free(void *ptr)
 	char	*block_start;
 
 	if (!ptr)
-		return;
-
-	if (!is_valid_pointer(ptr))
 		return;
 
 	zone = find_zone_containing_ptr(ptr);

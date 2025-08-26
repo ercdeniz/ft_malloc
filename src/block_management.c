@@ -1,5 +1,11 @@
 #include "malloc.h"
 
+/**
+ * @brief Yeni bir blok oluşturur ve zone'a ekler.
+ * @param zone Eklenecek zone.
+ * @param size Oluşturulacak bloğun boyutu.
+ * @return Oluşturulan blok.
+ */
 t_block	*create_block(t_zone *zone, size_t size)
 {
 	t_block	*block;
@@ -40,6 +46,12 @@ t_block	*create_block(t_zone *zone, size_t size)
 	return (block);
 }
 
+/**
+ * @brief Uygun bir boş blok bulur.
+ * @param zone Aranacak zone.
+ * @param size İstenen blok boyutu.
+ * @return Bulunan boş blok veya NULL(hiçbir blok bulunamazsa).
+ */
 t_block	*find_free_block(t_zone *zone, size_t size)
 {
 	t_block	*current;
@@ -55,6 +67,11 @@ t_block	*find_free_block(t_zone *zone, size_t size)
 	return (NULL);
 }
 
+/**
+ * @brief Tahsis edilen alan bloğun hepsini kaplamıyorsa bölünür, kalan alan yeni bir blok olarak ayrılır.
+ * @param block Bölünecek blok.
+ * @param size Yeni bloğun boyutu.
+ */
 void	split_block(t_block *block, size_t size)
 {
 	t_block	*new_block;
@@ -78,6 +95,10 @@ void	split_block(t_block *block, size_t size)
 	block->size = size;
 }
 
+/**
+ * @brief Tahsis edilen alan serbest bırakıldığında blokları birleştirir.
+ * @param block Birleştirilecek blok.
+ */
 void	merge_blocks(t_block *block)
 {
 	t_block	*next_block;
@@ -109,25 +130,15 @@ void	merge_blocks(t_block *block)
 	}
 }
 
+/**
+ * @brief Bloğun başlık bilgilerini alır.
+ * @param ptr Bloğun başlangıç adresi.
+ * @return Bloğun başlık bilgileri.
+ */
 t_block	*get_block_header(void *ptr)
 {
 	if (!ptr)
 		return (NULL);
 
 	return ((t_block *)((char *)ptr - sizeof(t_block)));
-}
-
-bool	is_valid_pointer(void *ptr)
-{
-	t_block	*block;
-
-	if (!ptr)
-		return (false);
-
-	block = get_block_header(ptr);
-
-	if (block->size == 0 || block->size > (MAX_ALLOC_SIZE))
-		return (false);
-
-	return (true);
 }

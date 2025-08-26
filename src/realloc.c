@@ -1,5 +1,12 @@
 #include "malloc.h"
 
+/**
+ * @brief Bellek alanını kopyalar.
+ * @param dst Hedef bellek alanı.
+ * @param src Kaynak bellek alanı.
+ * @param old_size Eski bellek alanının boyutu.
+ * @param new_size Yeni bellek alanının boyutu.
+ */
 static void	copy_data(void *dst, void *src, size_t old_size, size_t new_size)
 {
 	size_t	copy_size;
@@ -8,6 +15,12 @@ static void	copy_data(void *dst, void *src, size_t old_size, size_t new_size)
 	ft_memcpy(dst, src, copy_size);
 }
 
+/**
+ * @brief Bellek bloğunu bulunduğu zone'da genişletmeye çalışır.
+ * @param block Genişletilecek bellek bloğu.
+ * @param new_size Yeni boyut.
+ * @return Başarılı ise true, aksi halde false.
+ */
 static bool	try_expand_in_place(t_block *block, size_t new_size)
 {
 	t_block	*next_block;
@@ -42,6 +55,12 @@ static bool	try_expand_in_place(t_block *block, size_t new_size)
 	return (false);
 }
 
+/**
+ * @brief Large bir bellek bloğunu yeniden tahsis eder.
+ * @param ptr Yeniden tahsis edilecek bellek bloğunun başlangıç adresi.
+ * @param size Yeni boyut.
+ * @return Tahsis edilen bellek bloğunun başlangıç adresi veya NULL(başarısız durum).
+ */
 static void	*realloc_large(void *ptr, size_t size)
 {
 	void	*new_ptr;
@@ -61,6 +80,12 @@ static void	*realloc_large(void *ptr, size_t size)
 	return (new_ptr);
 }
 
+/**
+ * @brief Small veya tiny bir bellek bloğunu yeniden tahsis eder.
+ * @param ptr Yeniden tahsis edilecek bellek bloğunun başlangıç adresi.
+ * @param size Yeni boyut.
+ * @return Tahsis edilen bellek bloğunun başlangıç adresi veya NULL(başarısız durum).
+ */
 static void	*realloc_small_tiny(void *ptr, size_t size)
 {
 	t_block	*block;
@@ -90,6 +115,12 @@ static void	*realloc_small_tiny(void *ptr, size_t size)
 	return (new_ptr);
 }
 
+/**
+ * @brief Yeniden tahsis için ana fonksiyon.
+ * @param ptr Yeniden tahsis edilecek bellek bloğunun başlangıç adresi.
+ * @param size Yeni boyut.
+ * @return Tahsis edilen bellek bloğunun başlangıç adresi veya NULL(başarısız durum).
+ */
 void	*realloc(void *ptr, size_t size)
 {
 	t_zone	*zone;
@@ -103,9 +134,6 @@ void	*realloc(void *ptr, size_t size)
 		free(ptr);
 		return (NULL);
 	}
-
-	if (!is_valid_pointer(ptr))
-		return (NULL);
 
 	zone = find_zone_containing_ptr(ptr);
 	if (!zone)

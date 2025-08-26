@@ -1,5 +1,11 @@
 #include "malloc.h"
 
+/**
+ * @brief Yeni bir zone oluşturur.
+ * @param type Zone türü.
+ * @param min_size Zone için minimum boyut.
+ * @return Oluşturulan zone veya NULL (başarısız durum).
+ */
 t_zone	*create_zone(t_zone_type type, size_t min_size)
 {
 	t_zone	*zone;
@@ -22,6 +28,10 @@ t_zone	*create_zone(t_zone_type type, size_t min_size)
 	return (zone);
 }
 
+/**
+ * @brief Zone'u serbest bırakır.
+ * @param zone Serbest bırakılacak zone.
+ */
 void	destroy_zone(t_zone *zone)
 {
 	if (!zone)
@@ -30,6 +40,12 @@ void	destroy_zone(t_zone *zone)
 	safe_munmap(zone->start, zone->total_size);
 }
 
+/**
+ * @brief İstenilen boyutta boş alanı olan bir zone bulur.
+ * @param zones Zone listesi.
+ * @param size Gerekli boyut.
+ * @return Uygun zone veya NULL (bulunamadı).
+ */
 t_zone	*find_zone_with_free_space(t_zone *zones, size_t size)
 {
 	t_zone	*current;
@@ -62,36 +78,4 @@ t_zone	*find_zone_with_free_space(t_zone *zones, size_t size)
 	}
 
 	return (NULL);
-}
-
-void	cleanup_empty_zones(t_zone **zones)
-{
-	t_zone	*current;
-	t_zone	*prev;
-	t_zone	*next;
-
-	if (!zones)
-		return;
-
-	prev = NULL;
-	current = *zones;
-
-	while (current)
-	{
-		next = current->next;
-
-		if (current->used_size <= sizeof(t_zone))
-		{
-			if (prev)
-				prev->next = next;
-			else
-				*zones = next;
-
-			destroy_zone(current);
-		}
-		else
-			prev = current;
-
-		current = next;
-	}
 }

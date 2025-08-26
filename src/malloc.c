@@ -1,7 +1,18 @@
 #include "malloc.h"
 
+/**
+ * @brief Tahsisleri yöneten global değişken
+ * @param İlk (NULL) tiny zone.
+ * @param İkinci (NULL) small zone.
+ * @param Üçüncü (NULL) large zone.
+ * @param Dördüncü (0) sayfa boyutu 0 olarak ayarlanır (başlangıç değeri).
+ */
 t_malloc_state g_malloc_state = {NULL, NULL, NULL, 0};
 
+/**
+ * @brief Bellek tahsisi için sayfa boyutunu işletim sistemine göre ayarlar.
+ * @details getpagesize() veya sysconf(_SC_PAGESIZE) kullanılarak sayfa boyutu alınır.
+ */
 static void init_malloc_state(void)
 {
 	if (g_malloc_state.page_size == 0)
@@ -14,6 +25,11 @@ static void init_malloc_state(void)
 	}
 }
 
+/**
+ * @brief Large bir bellek bloğu tahsis eder.
+ * @param size Tahsis edilecek bellek bloğunun boyutu.
+ * @return Tahsis edilen bellek bloğunun başlangıç adresi veya NULL(başarısız durum).
+ */
 static void *malloc_large(size_t size)
 {
 	t_zone *zone;
@@ -37,6 +53,11 @@ static void *malloc_large(size_t size)
 	return ((char *)block + sizeof(t_block));
 }
 
+/**
+ * @brief Small veya tiny zone'u tahsis eder.
+ * @param size Tahsis edilecek bellek bloğunun boyutu.
+ * @return Tahsis edilen bellek bloğunun başlangıç adresi veya NULL(başarısız durum).
+ */
 static void *malloc_small_tiny(size_t size)
 {
 	t_zone_type type;
@@ -78,6 +99,11 @@ static void *malloc_small_tiny(size_t size)
 	return ((char *)block + sizeof(t_block));
 }
 
+/**
+ * @brief Bellek tahsisi için ana fonksiyon.
+ * @param size Tahsis edilecek bellek bloğunun boyutu.
+ * @return Tahsis edilen bellek bloğunun başlangıç adresi veya NULL(başarısız durum).
+ */
 void *malloc(size_t size)
 {
 	void *result;

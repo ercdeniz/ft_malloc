@@ -1,14 +1,28 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# include <stdarg.h>
 # include <unistd.h>
-# include <stdlib.h>
+# include <stdint.h>
 
-void	*ft_memcpy(void *dst, const void *src, size_t n);
-void	ft_putstr_fd(const char *s, int fd);
-void	ft_putchar_fd(char c, int fd);
-void	ft_putnbr_fd(int n, int fd);
-void	ft_putnbr_base_fd(unsigned long nbr, char *base, int fd);
-size_t	ft_strlen(const char *s);
+// LIBFT
+void		*ft_memcpy(void *dst, const void *src, size_t n);
+
+// FT_PRINTF
+# define DEC "0123456789"
+# define HEXLOW "0123456789abcdef"
+# define HEXUP "0123456789ABCDEF"
+
+typedef struct s_printf
+{
+	va_list	args;
+	char	f;
+	int		len;
+}			t_printf;
+
+int			ft_printf(const char *s, ...);
+int			ft_putchar(char c, t_printf *x);
+int			ft_putstr(char *s, t_printf *x);
+int			ft_itoa(uintptr_t n, int base, char *s, t_printf *x);
 
 #endif
